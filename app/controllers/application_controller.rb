@@ -17,6 +17,12 @@ class ApplicationController < ActionController::Base
     @count_microposts = user.microposts.count
     @count_followings = user.followings.count
     @count_followers = user.followers.count
+    #@count_favoritings = user.favoritings.count
+    #@count_favoriters = user.favoriters.count
+  end
+  
+  def feed_microposts
+    Micropost.where(user_id: self.following_ids + [self.id])
   end
   
 end
