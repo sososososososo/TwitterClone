@@ -13,6 +13,7 @@ class User < ApplicationRecord
   has_many :reverses_of_relationship, class_name: 'Relationship', foreign_key: 'follow_id'
   has_many :followers, through: :reverses_of_relationship, source: :user
   
+  has_many :relationfavorits
   has_many :favoritings, through: :relationfavorits, source: :micropost
   has_many :reverses_of_favoritship, class_name: 'relationfavorit', foreign_key: 'micropost_id'
   has_many :favoriters, through: :reverses_of_relationship, source: :user
@@ -37,21 +38,25 @@ class User < ApplicationRecord
   
   
   
-  def favorit(micropost)
+  def favfavorit(micropost_id, user_id)
+    
     #unless self == other_user
-      self.relationfavorits.find_or_create_by(micropost_id: other_user.id)
+#      Relationfavorit.find_or_create_by(micropost_id: user_id)
+      Relationfavorit.find_or_create_by(micropost_id: micropost_id, user_id: user_id)
     #end
   end
 
-  def unfavorit(micropost)
-    relationfavorit = self.relationfavorits.find_by(micropost_id: other_user.id)
+  def unfavorit(micropost_id, user_id)
+    relationfavorit = self.relationfavorits.find_by(micropost_id: micropost_id, user_id: user_id)
     relationfavorit.destroy if relationfavorit
   end
 
-  def favoriting?(micropost)
-    self.favoritings.include?(micropost)
+  def favoriting?(micropost_id)
+    self.favoritings.include?(micropost_id)
   end
-  
-  
+
+  def feed_microposts
+    Micropost.where(user_id: self.following_ids + [self.id])
+  end
   
 end

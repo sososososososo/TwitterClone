@@ -8,6 +8,7 @@ before_action :require_user_logged_in, only: [:index, :show]
   def show
     @user = User.find(params[:id])
     @microposts = @user.microposts.order('created_at DESC').page(params[:page])
+    @microposts = current_user.feed_microposts.order('created_at DESC').page(params[:page])
     counts @user
   end
 
@@ -43,7 +44,10 @@ before_action :require_user_logged_in, only: [:index, :show]
   #-------------------------------------------------------------お気に入り系
   def favoritings
     @user = User.find(params[:id])
-    @favoritings = @user.favoritings.page(params[:page])
+    #@favoritings = @user.favoritings.page(params[:page])
+    @microposts = current_user.feed_microposts.order('created_at DESC').page(params[:page])
+    @microposts = @user.favoritings.page(params[:page])
+    #@microposts = current_user.feed_microposts.order('created_at DESC').page(params[:page])
     counts(@user)
   end
   

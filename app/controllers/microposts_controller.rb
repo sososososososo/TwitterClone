@@ -19,6 +19,13 @@ class MicropostsController < ApplicationController
     flash[:success] = 'メッセージを削除しました。'
     redirect_back(fallback_location: root_path)
   end
+  
+  def favoritings
+    @user = User.find(params[:id])
+    @favoritings = @user.favoritings.page(params[:page])
+    @microposts = current_user.feed_microposts.order('created_at DESC').page(params[:page])
+    counts(@user)
+  end
 
   private
 
